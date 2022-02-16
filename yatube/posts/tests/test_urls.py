@@ -49,17 +49,22 @@ class PostURLTests(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_urls_authorized_client_author(self):
-        """Проверка доступности URL-адреса для авторизованного пользователя и автора"""
-        response = self.authorized_client_author.get(f'/posts/{self.post.id}/edit/')
+        """Проверка доступности URL-адреса
+         для авторизованного пользователя и автора"""
+        response = self.authorized_client_author.get(
+            f'/posts/{self.post.id}/edit/'
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_urls_authorized_client(self):
-        """Проверка доступности URL-адреса для авторизованного пользователя"""
+        """Проверка доступности URL-адреса
+         для авторизованного пользователя"""
         response = self.authorized_client_no_author.get('/create/')
         self.assertEqual(response.status_code, 200)
 
     def test_urls_guest_client(self):
-        """Проверка доступности URL-адресов для неавторизованного пользователя"""
+        """Проверка доступности URL-адресов
+         для неавторизованного пользователя"""
         for template, address in self.templates_url_names_guest_client.items():
             with self.subTest(address=address):
                 response = self.guest_client.get(address)
@@ -79,5 +84,7 @@ class PostURLTests(TestCase):
         self.assertTemplateUsed(response, 'posts/create_edit_post.html')
 
         # авторизованный пользователь-автор
-        response = self.authorized_client_author.get(f'/posts/{self.post.id}/edit/')
+        response = self.authorized_client_author.get(
+            f'/posts/{self.post.id}/edit/'
+        )
         self.assertTemplateUsed(response, 'posts/create_edit_post.html')

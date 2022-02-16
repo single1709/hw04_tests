@@ -25,7 +25,9 @@ class PostModelTest(TestCase):
         """Проверяем, что у моделей корректно работает __str__."""
         post = PostModelTest.post
         self.assertEqual(
-            post.__str__(), post.text[:15], "Это не первые пятнадцать символов поста")
+            post.__str__(), post.text[:15],
+            "Это не первые пятнадцать символов поста"
+        )
         group = PostModelTest.group
         self.assertEqual(
             group.__str__(), group.title, "Это не название группы")

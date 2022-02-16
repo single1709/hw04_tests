@@ -32,10 +32,22 @@ class PostPagesTests(TestCase):
 
         templates_pages_names = {
             reverse('posts:index'): 'posts/index.html',
-            reverse('posts:group_list', kwargs={'slug': 'test-slug'}): 'posts/group_list.html',
-            reverse('posts:profile', kwargs={'username': self.author}): 'posts/profile.html',
-            reverse('posts:post_detail', kwargs={'post_id': self.post.id}): 'posts/post_detail.html',
-            reverse('posts:post_edit', kwargs={'post_id': self.post.id}): 'posts/create_edit_post.html',
+            reverse(
+                'posts:group_list',
+                kwargs={'slug': 'test-slug'}
+            ): 'posts/group_list.html',
+            reverse(
+                'posts:profile',
+                kwargs={'username': self.author}
+            ): 'posts/profile.html',
+            reverse(
+                'posts:post_detail',
+                kwargs={'post_id': self.post.id}
+            ): 'posts/post_detail.html',
+            reverse(
+                'posts:post_edit',
+                kwargs={'post_id': self.post.id}
+            ): 'posts/create_edit_post.html',
             reverse('posts:post_create'): 'posts/create_edit_post.html',
         }
 
@@ -71,8 +83,14 @@ class PaginatorViewsTest(TestCase):
         """Проверяем, что Paginator работает корректно"""
         pages_names = [
             reverse('posts:index'),
-            reverse('posts:group_list', kwargs={'slug': self.group.slug}),
-            reverse('posts:profile', kwargs={'username': self.author.username}),
+            reverse(
+                'posts:group_list',
+                kwargs={'slug': self.group.slug}
+            ),
+            reverse(
+                'posts:profile',
+                kwargs={'username': self.author.username}
+            ),
         ]
 
         for name_page in pages_names:
@@ -81,7 +99,9 @@ class PaginatorViewsTest(TestCase):
                 self.assertEqual(len(response.context['page_obj']), 10)
 
             with self.subTest(name_page=name_page):
-                response = self.authorized_client_author.get(name_page + '?page=2')
+                response = self.authorized_client_author.get(
+                    name_page + '?page=2'
+                )
                 self.assertEqual(len(response.context['page_obj']), 3)
 
 
@@ -120,28 +140,44 @@ class ContextViewsTest(TestCase):
 
     def test_correct_context_group_list(self):
         """Проверяем context group_list"""
-        response = self.authorized_client_author.get(reverse('posts:group_list', kwargs={'slug': self.group.slug}))
+        response = self.authorized_client_author.get(
+            reverse('posts:group_list',
+                    kwargs={'slug': self.group.slug})
+        )
         self.assertEqual(response.context['group'], self.group)
 
     def test_correct_context_profile(self):
         """Проверяем context profile"""
         response = self.authorized_client_author.get(
-            reverse('posts:profile', kwargs={'username': self.author2.username}))
+            reverse('posts:profile',
+                    kwargs={'username': self.author2.username})
+        )
         self.assertEqual(response.context['author'], self.author2)
 
     def test_correct_context_post_detail(self):
         """Проверяем context post_detail"""
-        response = self.authorized_client_author.get(reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
+        response = self.authorized_client_author.get(
+            reverse('posts:post_detail',
+                    kwargs={'post_id': self.post.id})
+        )
         self.assertEqual(response.context['post'].text, self.post.text)
 
     def test_correct_context_post_edit(self):
         """Проверяем context post_edit"""
-        response = self.authorized_client_author.get(reverse('posts:post_edit', kwargs={'post_id': self.post.id}))
-        self.assertEqual(response.context['form'].initial['text'], self.post.text)
+        response = self.authorized_client_author.get(
+            reverse('posts:post_edit',
+                    kwargs={'post_id': self.post.id})
+        )
+        self.assertEqual(
+            response.context['form'].initial['text'],
+            self.post.text
+        )
 
     def test_correct_context_post_create(self):
         """Проверяем context post_create"""
-        response = self.authorized_client_author.get(reverse('posts:post_create'))
+        response = self.authorized_client_author.get(
+            reverse('posts:post_create')
+        )
         self.assertIsInstance(response.context['form'], PostForm)
 
 
@@ -170,11 +206,20 @@ class CreatePostTest(TestCase):
         на странице выбранной группы,в профайле пользователя"""
         pages_names = [
             reverse('posts:index'),
-            reverse('posts:group_list', kwargs={'slug': self.group.slug}),
-            reverse('posts:profile', kwargs={'username': self.author.username}),
+            reverse(
+                'posts:group_list',
+                kwargs={'slug': self.group.slug}
+            ),
+            reverse(
+                'posts:profile',
+                kwargs={'username': self.author.username}
+            ),
         ]
 
         for name_page in pages_names:
             with self.subTest(name_page=name_page):
                 response = self.authorized_client_author.get(name_page)
-                self.assertTrue(response.context['page_obj'][0], "Пост не появился на странице")
+                self.assertTrue(
+                    response.context['page_obj'][0],
+                    "Пост не появился на странице"
+                )

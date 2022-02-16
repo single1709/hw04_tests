@@ -41,7 +41,10 @@ class TaskCreateFormTests(TestCase):
             context,
         )
 
-        self.assertRedirects(response, reverse('posts:profile', kwargs={'username': self.author.username}))
+        self.assertRedirects(
+            response, reverse('posts:profile',
+                              kwargs={'username': self.author.username})
+        )
         self.assertEqual(Post.objects.count(), posts_count + 1)
         self.assertTrue(
             Post.objects.filter(
@@ -62,7 +65,10 @@ class TaskCreateFormTests(TestCase):
             context,
         )
 
-        self.assertRedirects(response, reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
+        self.assertRedirects(
+            response, reverse('posts:post_detail',
+                              kwargs={'post_id': self.post.id})
+        )
         self.assertTrue(
             Post.objects.filter(
                 text='Тестовый текст 2',
