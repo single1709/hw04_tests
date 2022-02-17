@@ -33,21 +33,17 @@ class PostPagesTests(TestCase):
         templates_pages_names = {
             reverse('posts:index',
                     ): 'posts/index.html',
-            reverse(
-                'posts:group_list',
-                kwargs={'slug': 'test-slug'}
+            reverse('posts:group_list',
+                    kwargs={'slug': 'test-slug'}
                     ): 'posts/group_list.html',
-            reverse(
-                'posts:profile',
-                kwargs={'username': self.author}
+            reverse('posts:profile',
+                    kwargs={'username': self.author}
                     ): 'posts/profile.html',
-            reverse(
-                'posts:post_detail',
-                kwargs={'post_id': self.post.id}
+            reverse('posts:post_detail',
+                    kwargs={'post_id': self.post.id}
                     ): 'posts/post_detail.html',
-            reverse(
-                'posts:post_edit',
-                kwargs={'post_id': self.post.id}
+            reverse('posts:post_edit',
+                    kwargs={'post_id': self.post.id}
                     ): 'posts/create_edit_post.html',
             reverse('posts:post_create',
                     ): 'posts/create_edit_post.html',
@@ -88,13 +84,11 @@ class PaginatorViewsTest(TestCase):
         pages_names = [
             reverse('posts:index',
                     ),
-            reverse(
-                'posts:group_list',
-                kwargs={'slug': self.group.slug}
+            reverse('posts:group_list',
+                    kwargs={'slug': self.group.slug}
                     ),
-            reverse(
-                'posts:profile',
-                kwargs={'username': self.author.username}
+            reverse('posts:profile',
+                    kwargs={'username': self.author.username}
                     ),
         ]
 
@@ -211,14 +205,12 @@ class CreatePostTest(TestCase):
         pages_names = [
             reverse('posts:index',
                     ),
-            reverse(
-                'posts:group_list',
-                kwargs={'slug': self.group.slug}
-            ),
-            reverse(
-                'posts:profile',
-                kwargs={'username': self.author.username}
-            ),
+            reverse('posts:group_list',
+                    kwargs={'slug': self.group.slug}
+                    ),
+            reverse('posts:profile',
+                    kwargs={'username': self.author.username}
+                    ),
         ]
 
         for name_page in pages_names:
