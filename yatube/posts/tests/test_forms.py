@@ -24,6 +24,7 @@ class TaskCreateFormTests(TestCase):
         cls.post = Post.objects.create(
             text='Тестовый текст',
             author=cls.author,
+            group=cls.group,
         )
 
     def test_create_post(self):
@@ -37,19 +38,27 @@ class TaskCreateFormTests(TestCase):
         }
 
         response = self.authorized_client_author.post(
-            reverse('posts:post_create'),
+            reverse('posts:post_create',
+                    ),
             context,
         )
 
         self.assertRedirects(
-            response, reverse('posts:profile',
-                              kwargs={'username': self.author.username})
+            response,
+            reverse('posts:profile',
+                    kwargs={'username': self.author.username}
+                    )
         )
-        self.assertEqual(Post.objects.count(), posts_count + 1)
+        self.assertEqual(
+            Post.objects.count(),
+            posts_count + 1
+        )
         self.assertTrue(
             Post.objects.filter(
-                author=self.author
-            ).exists()
+                author=self.author,
+                group=self.group,
+                text='Тестовый текст'
+            ).order_by('id')[0]
         )
 
     def test_edit_post(self):
@@ -61,16 +70,22 @@ class TaskCreateFormTests(TestCase):
         }
 
         response = self.authorized_client_author.post(
-            reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
+            reverse('posts:post_edit',
+                    kwargs={'post_id': self.post.id}
+                    ),
             context,
         )
 
         self.assertRedirects(
-            response, reverse('posts:post_detail',
-                              kwargs={'post_id': self.post.id})
+            response,
+            reverse('posts:post_detail',
+                    kwargs={'post_id': self.post.id}
+                    )
         )
         self.assertTrue(
             Post.objects.filter(
-                text='Тестовый текст 2',
-            ).exists()
+                author=self.author,
+                group=self.group,
+                text='Тестовый текст'
+            ).order_by('id').count() == 0
         )

@@ -1,5 +1,8 @@
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 from django.test import TestCase, Client
+
+from http import HTTPStatus
 
 from ..models import Post, Group
 
@@ -7,7 +10,6 @@ User = get_user_model()
 
 
 class PostURLTests(TestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -37,30 +39,39 @@ class PostURLTests(TestCase):
 
         # шаблоны страниц доступные неавторизованному пользователю
         cls.templates_url_names_guest_client = {
-            'posts/index.html': '/',
-            'posts/group_list.html': '/group/test-slug/',
-            'posts/profile.html': f'/profile/{cls.user}/',
-            'posts/post_detail.html': f'/posts/{cls.post.id}/',
+            'posts/index.html': reverse('posts:index',
+                                        ),
+            'posts/group_list.html': reverse('posts:group_list',
+                                             kwargs={'slug': 'test-slug'}
+                                     ),
+            'posts/profile.html': reverse('posts:profile',
+                                          kwargs={'username': cls.user}
+                                          ),
+            'posts/post_detail.html': reverse('posts:post_detail',
+                                              kwargs={'post_id': cls.post.id}
+                                              )
+        }
+
+        cls.templates_for_httpstatus = {
+            reverse('posts:post_edit',
+                    kwargs={'post_id': cls.post.id}
+                    ): HTTPStatus(200),
+            reverse('posts:post_create',
+                    ): HTTPStatus(200),
         }
 
     def test_unexisting_page(self):
         """Проверка несуществующей страницы"""
         response = self.guest_client.get('unexisting_page/')
-        self.assertEqual(response.status_code, 404)
-
-    def test_urls_authorized_client_author(self):
-        """Проверка доступности URL-адреса
-         для авторизованного пользователя и автора"""
-        response = self.authorized_client_author.get(
-            f'/posts/{self.post.id}/edit/'
-        )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus(404))
 
     def test_urls_authorized_client(self):
         """Проверка доступности URL-адреса
          для авторизованного пользователя"""
-        response = self.authorized_client_no_author.get('/create/')
-        self.assertEqual(response.status_code, 200)
+        for address, httpstatus in self.templates_for_httpstatus.items():
+            with self.subTest(address=address):
+                response = self.authorized_client_author.get(address)
+                self.assertEqual(response.status_code, httpstatus)
 
     def test_urls_guest_client(self):
         """Проверка доступности URL-адресов
@@ -68,7 +79,7 @@ class PostURLTests(TestCase):
         for template, address in self.templates_url_names_guest_client.items():
             with self.subTest(address=address):
                 response = self.guest_client.get(address)
-                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.status_code, HTTPStatus(200))
 
     def test_urls_uses_correct_template(self):
         """Проверка, что URL-адреса используют соответствующий шаблон"""
@@ -80,11 +91,16 @@ class PostURLTests(TestCase):
                 self.assertTemplateUsed(response, template)
 
         # авторизованный пользователь
-        response = self.authorized_client_no_author.get('/create/')
+        response = self.authorized_client_no_author.get(
+            reverse('posts:post_create',
+                    )
+        )
         self.assertTemplateUsed(response, 'posts/create_edit_post.html')
 
         # авторизованный пользователь-автор
         response = self.authorized_client_author.get(
-            f'/posts/{self.post.id}/edit/'
+            reverse('posts:post_edit',
+                    kwargs={'post_id': self.post.id}
+                    )
         )
         self.assertTemplateUsed(response, 'posts/create_edit_post.html')

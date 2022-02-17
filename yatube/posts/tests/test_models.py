@@ -7,6 +7,8 @@ User = get_user_model()
 
 
 class PostModelTest(TestCase):
+    COUNT_POSTS: int = 15
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -18,16 +20,20 @@ class PostModelTest(TestCase):
         )
         cls.post = Post.objects.create(
             author=cls.user,
-            text='Тестовая пост',
+            text='Тестовый пост',
         )
 
     def test_models_have_correct_object_names(self):
         """Проверяем, что у моделей корректно работает __str__."""
         post = PostModelTest.post
         self.assertEqual(
-            post.__str__(), post.text[:15],
-            "Это не первые пятнадцать символов поста"
+            str(post),
+            post.text[:self.COUNT_POSTS],
+            "Некорректно работает работает __str__"
         )
         group = PostModelTest.group
         self.assertEqual(
-            group.__str__(), group.title, "Это не название группы")
+            str(group),
+            group.title,
+            "Некорректно работает работает __str__"
+        )
