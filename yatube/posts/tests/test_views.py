@@ -74,31 +74,28 @@ class PaginatorViewsTest(TestCase):
             slug='test-slug',
         )
 
-
         objs = (Post(
             text=f'Тестовый текст {i}',
             author=cls.author,
             group=cls.group,) for i in range(13)
         )
-
         cls.post = Post.objects.bulk_create(objs)
-
-
 
     def test_paginator(self):
         """Проверяем, что Paginator работает корректно"""
         PAGE_PAGINATOR: str = "?page=2"
 
         pages_names = [
-            reverse('posts:index'),
+            reverse('posts:index',
+                    ),
             reverse(
                 'posts:group_list',
                 kwargs={'slug': self.group.slug}
-            ),
+                    ),
             reverse(
                 'posts:profile',
                 kwargs={'username': self.author.username}
-            ),
+                    ),
         ]
 
         for name_page in pages_names:
@@ -135,8 +132,6 @@ class ContextViewsTest(TestCase):
             group=cls.group,
         )
 
-
-
     def test_correct_context_index(self):
         """Проверяем context index"""
         response = self.authorized_client_author.get(reverse('posts:index'))
@@ -146,7 +141,8 @@ class ContextViewsTest(TestCase):
         """Проверяем context group_list"""
         response = self.authorized_client_author.get(
             reverse('posts:group_list',
-                    kwargs={'slug': self.group.slug})
+                    kwargs={'slug': self.group.slug}
+                    )
         )
         self.assertEqual(response.context['group'], self.group)
 
@@ -154,7 +150,8 @@ class ContextViewsTest(TestCase):
         """Проверяем context profile"""
         response = self.authorized_client_author.get(
             reverse('posts:profile',
-                    kwargs={'username': self.author2.username})
+                    kwargs={'username': self.author2.username}
+                    )
         )
         self.assertEqual(response.context['author'], self.author2)
 
@@ -162,7 +159,8 @@ class ContextViewsTest(TestCase):
         """Проверяем context post_detail"""
         response = self.authorized_client_author.get(
             reverse('posts:post_detail',
-                    kwargs={'post_id': self.post.id})
+                    kwargs={'post_id': self.post.id}
+                    )
         )
         self.assertEqual(response.context['post'].text, self.post.text)
 
@@ -170,7 +168,8 @@ class ContextViewsTest(TestCase):
         """Проверяем context post_edit"""
         response = self.authorized_client_author.get(
             reverse('posts:post_edit',
-                    kwargs={'post_id': self.post.id})
+                    kwargs={'post_id': self.post.id}
+                    )
         )
         self.assertEqual(
             response.context['form'].initial['text'],
@@ -180,7 +179,8 @@ class ContextViewsTest(TestCase):
     def test_correct_context_post_create(self):
         """Проверяем context post_create"""
         response = self.authorized_client_author.get(
-            reverse('posts:post_create')
+            reverse('posts:post_create',
+                    )
         )
         self.assertIsInstance(response.context['form'], PostForm)
 
@@ -209,7 +209,8 @@ class CreatePostTest(TestCase):
         """Проверяем что пост после создания появится на главной странице сайта,
         на странице выбранной группы,в профайле пользователя"""
         pages_names = [
-            reverse('posts:index'),
+            reverse('posts:index',
+                    ),
             reverse(
                 'posts:group_list',
                 kwargs={'slug': self.group.slug}

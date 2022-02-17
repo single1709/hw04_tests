@@ -43,7 +43,7 @@ class PostURLTests(TestCase):
                                         ),
             'posts/group_list.html': reverse('posts:group_list',
                                              kwargs={'slug': 'test-slug'}
-                                     ),
+                                             ),
             'posts/profile.html': reverse('posts:profile',
                                           kwargs={'username': cls.user}
                                           ),
