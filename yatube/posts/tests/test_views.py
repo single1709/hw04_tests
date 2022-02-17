@@ -36,19 +36,19 @@ class PostPagesTests(TestCase):
             reverse(
                 'posts:group_list',
                 kwargs={'slug': 'test-slug'}
-                     ): 'posts/group_list.html',
+                    ): 'posts/group_list.html',
             reverse(
                 'posts:profile',
                 kwargs={'username': self.author}
-                     ): 'posts/profile.html',
+                    ): 'posts/profile.html',
             reverse(
                 'posts:post_detail',
                 kwargs={'post_id': self.post.id}
-                     ): 'posts/post_detail.html',
+                    ): 'posts/post_detail.html',
             reverse(
                 'posts:post_edit',
                 kwargs={'post_id': self.post.id}
-                     ): 'posts/create_edit_post.html',
+                    ): 'posts/create_edit_post.html',
             reverse('posts:post_create',
                     ): 'posts/create_edit_post.html',
         }
@@ -91,11 +91,11 @@ class PaginatorViewsTest(TestCase):
             reverse(
                 'posts:group_list',
                 kwargs={'slug': self.group.slug}
-                     ),
+                    ),
             reverse(
                 'posts:profile',
                 kwargs={'username': self.author.username}
-                     ),
+                    ),
         ]
 
         for name_page in pages_names:
