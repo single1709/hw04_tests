@@ -38,54 +38,45 @@ class TaskCreateFormTests(TestCase):
         }
 
         response = self.authorized_client_author.post(
-            reverse('posts:post_create',
-                    ),
+            reverse('posts:post_create'),
             context,
         )
 
         self.assertRedirects(
             response,
-            reverse('posts:profile',
-                    kwargs={'username': self.author.username}
-                    )
+            reverse('posts:profile', kwargs={'username': self.author.username})
         )
         self.assertEqual(
             Post.objects.count(),
             posts_count + 1
         )
-        self.assertTrue(
-            Post.objects.filter(
-                author=self.author,
-                group=self.group,
-                text='Тестовый текст'
-            ).order_by('id')[0]
-        )
+
+        new_post = Post.objects.order_by('id').last()
+        self.assertEqual(new_post.text, self.post.text)
+        self.assertEqual(new_post.author, self.post.author)
+        self.assertEqual(new_post.group, self.post.group)
 
     def test_edit_post(self):
         """Проверка формы редактирования поста"""
 
         context = {
-            'group': self.group.pk,
+            'group': self.group.id,
             'text': 'Тестовый текст 2',
         }
 
         response = self.authorized_client_author.post(
-            reverse('posts:post_edit',
-                    kwargs={'post_id': self.post.id}
-                    ),
+            reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
             context,
         )
 
         self.assertRedirects(
             response,
-            reverse('posts:post_detail',
-                    kwargs={'post_id': self.post.id}
-                    )
+            reverse('posts:post_detail', kwargs={'post_id': self.post.id})
         )
+
+        edit_post = Post.objects.get(id=self.post.id)
         self.assertTrue(
-            Post.objects.filter(
-                author=self.author,
-                group=self.group,
-                text='Тестовый текст'
-            ).order_by('id').count() == 0
+            edit_post.text != self.post.text or
+            edit_post.group != self.post.group or
+            edit_post.author != self.post.author
         )
