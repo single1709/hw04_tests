@@ -76,7 +76,7 @@ class TaskCreateFormTests(TestCase):
 
         edit_post = Post.objects.get(id=self.post.id)
         self.assertTrue(
-            edit_post.text != self.post.text or
-            edit_post.group != self.post.group or
-            edit_post.author != self.post.author
+            edit_post.text != self.post.text
+            or edit_post.group != self.post.group
+            or edit_post.author != self.post.author
         )

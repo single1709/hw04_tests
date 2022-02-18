@@ -137,7 +137,10 @@ class ContextViewsTest(TestCase):
     def test_correct_context_profile(self):
         """Проверяем context profile"""
         response = self.authorized_client_author.get(
-            reverse('posts:profile', kwargs={'username': self.author2.username})
+            reverse(
+                'posts:profile',
+                kwargs={'username': self.author2.username}
+            )
         )
         self.assertEqual(response.context['author'], self.author2)
 
@@ -191,8 +194,14 @@ class CreatePostTest(TestCase):
         на странице выбранной группы,в профайле пользователя"""
         pages_names = (
             reverse('posts:index'),
-            reverse('posts:group_list', kwargs={'slug': self.group.slug}),
-            reverse('posts:profile', kwargs={'username': self.author.username}),
+            reverse(
+                'posts:group_list',
+                kwargs={'slug': self.group.slug}
+            ),
+            reverse(
+                'posts:profile',
+                kwargs={'username': self.author.username}
+            ),
         )
 
         for name_page in pages_names:
